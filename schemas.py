@@ -13,5 +13,5 @@ class VINBase(BaseModel):
 
 
 class VINSchema(VINBase):
-    class Config():
+    class Config:
         orm_mode = True

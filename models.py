@@ -1,9 +1,9 @@
-from database import Base
+from db_settings import Base
 from sqlalchemy import Column, Integer, String, Boolean
 
 
-class VIN(Base):
-    __tablename__ = "vins"
+class Vin(Base):
+    __tablename__ = "vin_records"
 
     id = Column(Integer, primary_key=True, index=True)
     vin = Column(String)

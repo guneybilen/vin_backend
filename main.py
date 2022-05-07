@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from routers import lookup, remove, export
+from db_settings import engine
+
 import models
-from database import engine
 
 app = FastAPI()
 
