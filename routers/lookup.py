@@ -24,9 +24,6 @@ def check_from_cache(vin: str, db: Session = Depends(db_settings.get_db)):
 
 def retrieve_and_store(vin: str, db: Session = Depends(db_settings.get_db)):
     vehicle = requests.get(f"https://vpic.nhtsa.dot.gov/api/vehicles/decodevinextended/{vin}?format=json")
-    if not vehicle:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"vehicle with the {vin} number could not be found")
     parsed_vehicle = vehicle.json()
 
     obj = models.Vin()
@@ -41,6 +38,9 @@ def retrieve_and_store(vin: str, db: Session = Depends(db_settings.get_db)):
             obj.model_year = val["Value"]
         if val["Variable"] == "Body Class":
             obj.body_class = val["Value"]
+            if obj.make is None and obj.model is None and obj.model_year is None and obj.body_class is None:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                                    detail=f"vehicle with the {vin} number could not be found")
         obj.cached_result = False
 
     actions.create_vehicle_in_db(obj, db)

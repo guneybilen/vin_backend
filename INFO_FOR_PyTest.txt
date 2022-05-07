@@ -1,0 +1,6 @@
+in order for the modules to be located correctly
+start the pytest with the following command:
+$ python -m pytest
+
+and NOT with:
+$ pytest
