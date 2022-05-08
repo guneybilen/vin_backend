@@ -1,3 +1,10 @@
+"""
+The lookup module:  Check by the vin string from the
+database first and if no entry found in the database
+retrieve through vPIC API and store in
+the database.
+"""
+
 from fastapi import APIRouter, Depends, status, HTTPException
 from db import actions
 from sqlalchemy.orm import Session
@@ -14,6 +21,17 @@ router = APIRouter(
 
 @router.get("/lookup", status_code=status.HTTP_200_OK)
 def check_from_cache(vin: str, db: Session = Depends(db_settings.get_db)):
+    """
+    checks the vehicle with the entered vin string from the local database first
+    and if not found calls a helper function to retrieve from vPIC API and store
+    the newly created vehicle information in the local database.
+
+    :param vin: vehicle identification (vin) string input.
+    :param db: database instance.
+    :return: either found database record or retrieved and stored newly
+             created database record came back from the passed
+             function.
+    """
     db_result = actions.check_from_cache(vin, db)
     if db_result:
         return db_result
@@ -23,6 +41,15 @@ def check_from_cache(vin: str, db: Session = Depends(db_settings.get_db)):
 
 
 def retrieve_and_store(vin: str, db: Session = Depends(db_settings.get_db)):
+    """
+    A fresh check from vPIC API and if the vehicle found store in the
+    local database and return result else return a 404 error.
+
+    :param vin: vehicle identification string (vin) argument from the calling function.
+    :param db: database instance.
+    :return: either HTTPException or retrieved and stored newly
+             created database record to the calling function.
+    """
     vehicle = requests.get(f"https://vpic.nhtsa.dot.gov/api/vehicles/decodevinextended/{vin}?format=json")
     parsed_vehicle = vehicle.json()
 
