@@ -23,7 +23,8 @@ def create_vehicle_in_db(vehicle: schemas.VINSchema, db: Session):
 def remove(vin: str, db: Session):
     found_vin = db.query(models.Vin).filter(models.Vin.vin == vin).first()
     if not found_vin:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"vin with number {vin} not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"vehicle with the {vin} vin could not be found")
     db.delete(found_vin)
     db.commit()
     return "removed successfully"

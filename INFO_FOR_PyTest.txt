@@ -4,3 +4,9 @@ $ python -m pytest
 
 and NOT with:
 $ pytest
+
+for test coverage use the following package:
+$ pip install pytest-cov
+
+and use with the following command:
+$ python -m pytest --cov
